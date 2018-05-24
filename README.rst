@@ -1,3 +1,9 @@
+WARNING!
+========
+This is a monkey patch for allowing second-precise scheduling which i required for one of my pet projects.
+Use this at your very own risk, this is not tested anyhow.
+
+
 schedule
 ========
 

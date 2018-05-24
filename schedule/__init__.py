@@ -331,27 +331,47 @@ class Job(object):
         self.tags.update(tags)
         return self
 
+    # MONKEY PATCH FOR SECOND-PRECISE SCHEDULING 
     def at(self, time_str):
-        """
-        Schedule the job every day at a specific time.
+        """Schedule the job every day at a specific time.
 
-        Calling this is only valid for jobs scheduled to run
-        every N day(s).
-
-        :param time_str: A string in `XX:YY` format.
-        :return: The invoked job instance
+        Calling this is only valid for jobs scheduled to run every
+        N day(s).
         """
         assert self.unit in ('days', 'hours') or self.start_day
-        hour, minute = time_str.split(':')
+        hour, minute, second = [t for t in time_str.split(':')]
         minute = int(minute)
+        second = int(second)
         if self.unit == 'days' or self.start_day:
             hour = int(hour)
             assert 0 <= hour <= 23
         elif self.unit == 'hours':
             hour = 0
         assert 0 <= minute <= 59
-        self.at_time = datetime.time(hour, minute)
+        self.at_time = datetime.time(hour, minute, second)
         return self
+
+    # def at(self, time_str):
+    #     """
+    #     Schedule the job every day at a specific time.
+
+    #     Calling this is only valid for jobs scheduled to run
+    #     every N day(s).
+
+    #     :param time_str: A string in `XX:YY` format.
+    #     :return: The invoked job instance
+    #     """
+    #     assert self.unit in ('days', 'hours') or self.start_day
+    #     hour, minute = time_str.split(':')
+    #     minute = int(minute)
+    #     if self.unit == 'days' or self.start_day:
+    #         hour = int(hour)
+    #         assert 0 <= hour <= 23
+    #     elif self.unit == 'hours':
+    #         hour = 0
+    #     assert 0 <= minute <= 59
+    #     self.at_time = datetime.time(hour, minute)
+    #     return self
 
     def to(self, latest):
         """
